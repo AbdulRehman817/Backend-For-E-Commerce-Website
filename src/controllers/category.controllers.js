@@ -11,12 +11,16 @@ const uploadImageToImgur = async (filePath, fileName) => {
     form.append("image", imageBuffer, { filename: fileName });
     form.append("type", "file");
 
-    const response = await axios.post("https://api.imgur.com/3/image", form, {
-      headers: {
-        ...form.getHeaders(),
-        Authorization: "Client-ID bedbf25d467357d", // Replace with your actual Imgur Client-ID
-      },
-    });
+    const response = await axios.post(
+      "https://api.imgur.com/3/image",
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: "Client-ID bedbf25d467357d", // Replace with your actual Imgur Client-ID
+        },
+      }
+    );
 
     // Remove file after upload
     fs.unlinkSync(filePath);
@@ -51,9 +55,7 @@ const addCategory = async (req, res) => {
     });
 
     await newCategory.save();
-    res
-      .status(201)
-      .json({ message: "Category added successfully!", category: newCategory });
+    res.status(201).json({ message: "Category added successfully!", category: newCategory });
   } catch (error) {
     console.error("Error adding category:", error);
     res.status(500).json({ error: "Server error" });
@@ -72,3 +74,71 @@ const getCategories = async (req, res) => {
 };
 
 export { addCategory, getCategories };
+
+
+
+
+
+
+
+
+
+
+
+//[
+  //     name: "Air Conditioner",
+  //     image:
+  //       "https://websitedemos.net/electronic-store-04/wp-content/uploads/sites/1055/2022/03/electronic-store-category-image-06.jpg",
+  //     slug: "air-conditioner",
+  //     products: 4, // Changed from string to number
+  //   },
+  //   {
+  //     name: "Audio & Video",
+  //     image:
+  //       "https://websitedemos.net/electronic-store-04/wp-content/uploads/sites/1055/2022/03/electronic-store-category-image-08.jpg",
+  //     slug: "audio-video",
+  //     products: 5,
+  //   },
+  //   {
+  //     name: "Gadgets",
+  //     image:
+  //       "https://websitedemos.net/electronic-store-04/wp-content/uploads/sites/1055/2022/03/electronic-store-category-image-02.jpg",
+  //     slug: "gadgets",
+  //     products: 6,
+  //   },
+  //   {
+  //     name: "Kitchen Appliances",
+  //     image:
+  //       "https://websitedemos.net/electronic-store-04/wp-content/uploads/sites/1055/2022/03/electronic-store-category-image-05.jpg",
+  //     slug: "kitchen-appliances",
+  //     products: 6,
+  //   },
+  //   {
+  //     name: "PCs & Laptop",
+  //     image:
+  //       "https://websitedemos.net/electronic-store-04/wp-content/uploads/sites/1055/2022/03/electronic-store-category-image-03.jpg",
+  //     slug: "pcs-laptop", // Fixed slug formatting
+  //     products: 4,
+  //   },
+  //   {
+  //     name: "Refrigerator",
+  //     image:
+  //       "https://websitedemos.net/electronic-store-04/wp-content/uploads/sites/1055/2022/03/electronic-store-category-image-04.jpg",
+  //     slug: "refrigerator",
+  //     products: 4,
+  //   },
+  //   {
+  //     name: "Smart Home",
+  //     image:
+  //       "https://websitedemos.net/electronic-store-04/wp-content/uploads/sites/1055/2022/03/electronic-store-category-image-01.jpg",
+  //     slug: "smart-home", // Fixed slug formatting
+  //     products: 5,
+  //   },
+  //   {
+  //     name: "Home Appliances",
+  //     image:
+  //       "https://websitedemos.net/electronic-store-04/wp-content/uploads/sites/1055/2022/03/electronic-store-category-image-07.jpg",
+  //     slug: "home-appliances", // Fixed slug formatting
+  //     products: 5,
+  //   },
+  // ];
