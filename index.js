@@ -14,7 +14,7 @@ import authRoutes from "./src/routes/authRoutes.js";
 import cors from "cors";
 const app = express();
 let corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://e-commerce-website-react-js-gules.vercel.app",
   optionSuccessStatus: 200,
 };
 
