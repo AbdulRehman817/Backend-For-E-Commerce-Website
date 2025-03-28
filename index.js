@@ -1,14 +1,14 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
-import connectDB from "../src/db/index.js";
-import BestDealProduct from "../src/routes/BestDealProducts.routes.js";
-import productRoutes from "../src/routes/product.routes.js";
-import orderRoutes from "../src/routes/order.routes.js";
-import cartRoutes from "../src/routes/cart.route.js";
-import categoryRoutes from "../src/routes/category.routes.js";
+import connectDB from "../db/index.js";
+import BestDealProduct from "./src/routes/BestDealProducts.routes.js";
+import productRoutes from "./src/routes/product.routes.js";
+import orderRoutes from "./src/routes/order.routes.js";
+import cartRoutes from "./src/routes/cart.route.js";
+import categoryRoutes from "./src/routes/category.routes.js";
 import cookieParser from "cookie-parser";
-import authRoutes from "../src/routes/authRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
 import cors from "cors";
 
 const app = express();
