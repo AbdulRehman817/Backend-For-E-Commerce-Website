@@ -12,7 +12,7 @@ import authRoutes from "./src/routes/authRoutes.js";
 import cors from "cors";
 const app = express();
 let corsOptions = {
-  origin: "https://e-commerce-website-react-js-gules.vercel.app/",
+  origin: "https://e-commerce-website-react-js-gules.vercel.app",
   optionSuccessStatus: 200,
 };
 
@@ -23,9 +23,6 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-
-// routes//shukiria
-// app.use("/api/v1", likeRoutes);
 
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", cartRoutes);
