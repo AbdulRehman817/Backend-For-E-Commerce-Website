@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken"; // Import JWT
 import { Order } from "../models/order.model.js";
 import { Product } from "../models/products.models.js";
-import { User } from "../models/user.models.js";
+import { Customer } from "../models/customer.models.js";
 
 // Function to get user details
 const getUserDetail = async (req) => {
@@ -14,7 +14,7 @@ const getUserDetail = async (req) => {
       refreshToken,
       process.env.REFRESH_JWT_SECRET
     );
-    const user = await User.findOne({ email: decodedToken.email });
+    const user = await Customer.findOne({ email: decodedToken.email });
 
     return user || null; // Return user if found, else null
   } catch (error) {

@@ -19,9 +19,7 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    userId: {
-      type: String,
-    },
+
     image: {
       type: String,
       required: true,
@@ -34,7 +32,7 @@ const ProductSchema = new mongoose.Schema(
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Customer",
       required: true,
     },
   },
