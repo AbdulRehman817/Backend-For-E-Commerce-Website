@@ -13,6 +13,7 @@ import cors from "cors";
 const app = express();
 let corsOptions = {
   origin: "https://e-commerce-website-react-js-gules.vercel.app",
+   credentials: true,
   optionsSuccessStatus: 200,
 };
 
