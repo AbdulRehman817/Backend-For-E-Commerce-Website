@@ -10,21 +10,29 @@ import categoryRoutes from "./src/routes/category.routes.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/authRoutes.js";
 import cors from "cors";
-const app = express();
-let corsOptions = {
-  origin: "https://e-commerce-website-react-js-gules.vercel.app",
-   credentials: true,
-  optionsSuccessStatus: 200,
-};
 
-app.use(express.json());
+const app = express();
+
+// ✅ Setup CORS
+const corsOptions = {
+  origin: "https://e-commerce-website-react-js-gules.vercel.app",
+  credentials: true, // allow cookies or auth headers
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 app.use(cors(corsOptions));
-app.use(cookieParser());
+app.options("*", cors(corsOptions)); // ✅ handle preflight
+
+// ✅ Middleware
 app.use(express.json());
+app.use(cookieParser());
+
+// ✅ Test Route
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World! Backend is working ✅");
 });
 
+// ✅ API Routes
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", cartRoutes);
 app.use("/api/v1", orderRoutes);
@@ -32,12 +40,15 @@ app.use("/api/v1", BestDealProduct);
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", categoryRoutes);
 
+// ✅ Connect DB and Start Server
 connectDB()
   .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log(`⚙️  Server is running at port : ${process.env.PORT}`);
+    console.log("✅ MongoDB connected successfully");
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`⚙️  Server is running at port : ${PORT}`);
     });
   })
   .catch((err) => {
-    console.log("MONGO DB connection failed !!! ", err);
+    console.error("❌ MONGO DB connection failed !!! ", err.message);
   });
