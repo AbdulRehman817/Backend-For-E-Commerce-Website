@@ -1,0 +1,46 @@
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
+import connectDB from "./src/db/index.js";
+import BestDealProduct from "./src/routes/BestDealProducts.routes.js";
+import productRoutes from "./src/routes/product.routes.js";
+import orderRoutes from "./src/routes/order.routes.js";
+import cartRoutes from "./src/routes/cart.route.js";
+import categoryRoutes from "./src/routes/category.routes.js";
+import cookieParser from "cookie-parser";
+import authRoutes from "./src/routes/authRoutes.js";
+import paymentRoutes from "./src/routes/payment.routes.js";
+import cors from "cors";
+const app = express();
+const corsOptions = {
+  origin: "https://e-commerce-website-react-js-gules.vercel.app",
+  credentials: true, // allow cookies or auth headers
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(express.json());
+app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+app.use("/api/v1", productRoutes);
+app.use("/api/v1", cartRoutes);
+app.use("/api/v1", orderRoutes);
+app.use("/api/v1", BestDealProduct);
+app.use("/api/v1", authRoutes);
+app.use("/api/v1", categoryRoutes);
+app.use("/api/v1", paymentRoutes);
+
+connectDB()
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log(`⚙️  Server is running at port : ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log("MONGO DB connection failed !!! ", err);
+  });
