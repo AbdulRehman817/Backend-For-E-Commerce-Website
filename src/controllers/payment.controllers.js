@@ -6,14 +6,27 @@ import { Product } from "../models/products.models.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Helper: get user from cookie/token
+// Helper: get user from Bearer token (localStorage) OR refreshToken cookie
 const getUserDetail = async (req) => {
   try {
+    // Try Bearer token from Authorization header first
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const accessToken = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(accessToken, process.env.ACCESS_JWT_SECRET);
+      const user = await Customer.findOne({ email: decodedToken.email });
+      if (user) return user;
+    }
+
+    // Fallback: try refreshToken from cookie
     const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
-    if (!refreshToken) return null;
-    const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
-    const user = await Customer.findOne({ email: decodedToken.email });
-    return user || null;
+    if (refreshToken) {
+      const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
+      const user = await Customer.findOne({ email: decodedToken.email });
+      if (user) return user;
+    }
+
+    return null;
   } catch (error) {
     console.error("Error verifying user:", error);
     return null;
@@ -41,7 +54,7 @@ export const createCheckoutSession = async (req, res) => {
           images: item.image ? [item.image] : [],
           description: item.description || item.name,
         },
-        unit_amount: Math.round(item.price * 100), // Stripe uses cents
+        unit_amount: Math.round(item.price * 100),
       },
       quantity: item.quantity,
     }));
@@ -51,7 +64,6 @@ export const createCheckoutSession = async (req, res) => {
       0
     );
 
-    // Save a pending order first
     const products = cartItems.map((item) => ({
       productId: item._id,
       quantity: item.quantity,
@@ -66,7 +78,6 @@ export const createCheckoutSession = async (req, res) => {
       shippingDetails: shippingDetails || {},
     });
 
-    // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
@@ -87,14 +98,14 @@ export const createCheckoutSession = async (req, res) => {
   }
 };
 
-// POST /api/v1/payment/webhook  (Stripe calls this)
+// POST /api/v1/payment/webhook
 export const stripeWebhook = async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
 
   try {
     event = stripe.webhooks.constructEvent(
-      req.body, // must be raw body
+      req.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
@@ -106,7 +117,6 @@ export const stripeWebhook = async (req, res) => {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     const orderId = session.metadata.orderId;
-
     try {
       await Order.findByIdAndUpdate(orderId, {
         paymentStatus: "paid",
